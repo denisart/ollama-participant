@@ -5,7 +5,7 @@ const PARTICIPANT_ID = 'ollama-participant';
 
 const MODEL_SETTING_FIELD_NAME = 'model';
 
-const DEFAULT_MODEL_NAME = 'llama3.1';
+const DEFAULT_MODEL_NAME = 'qwen2.5-coder';
 
 const getModelName = (): string => {
 	const modelName = vscode.workspace.getConfiguration(PARTICIPANT_ID).get(MODEL_SETTING_FIELD_NAME);
@@ -24,7 +24,7 @@ const register_chat_participant = (context: vscode.ExtensionContext) => {
 		_token: vscode.CancellationToken
 	) => {
 		const messages = [];
-		
+
 		for (const m of context.history) {
             if (m instanceof vscode.ChatRequestTurn) {
                 messages.push({
@@ -44,14 +44,19 @@ const register_chat_participant = (context: vscode.ExtensionContext) => {
 			content: request.prompt,
 		});
 
-		const ollamaResponse = await ollama.chat({
-			model: getModelName(), 
-			messages: messages, 
-			stream: true 
-		});
-		
-		for await (const part of ollamaResponse) {
-			stream.markdown(part.message.content);
+		try {
+			const ollamaResponse = await ollama.chat({
+				model: getModelName(),
+				messages: messages, 
+				stream: true 
+			});
+
+			for await (const part of ollamaResponse) {
+				stream.markdown(part.message.content);
+			}
+		} catch(e) {
+			const error_message = (e as Error).message; 
+			vscode.window.showErrorMessage(`${PARTICIPANT_ID}: ${error_message}`);
 		}
 	};
 
