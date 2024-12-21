@@ -1,0 +1,55 @@
+import * as vscode from 'vscode';
+import ollama from 'ollama';
+
+const PARTICIPANT_ID = 'ollama-participant';
+const OLLAMA_MODEL_NAME = 'qwen2.5-coder';
+
+const register_chat_participant = (context: vscode.ExtensionContext) => {
+	const chat_handler: vscode.ChatRequestHandler = async (
+		request: vscode.ChatRequest,
+		context: vscode.ChatContext, 
+		stream: vscode.ChatResponseStream, 
+		_token: vscode.CancellationToken
+	) => {
+		const messages = [];
+		
+		for (const m of context.history) {
+            if (m instanceof vscode.ChatRequestTurn) {
+                messages.push({
+					role: 'user', 
+					content: m.prompt,
+				});
+            } else if (m instanceof vscode.ChatResponseTurn) {
+                messages.push({
+					role: 'assistant',
+					content: Array.from(m.response.values()).map(value => value.value).join('\n'),
+				});
+            }
+        }
+
+		messages.push({
+			role: 'user', 
+			content: request.prompt,
+		});
+
+		const ollamaResponse = await ollama.chat({
+			model: OLLAMA_MODEL_NAME, 
+			messages: messages, 
+			stream: true 
+		});
+		
+		for await (const part of ollamaResponse) {
+			stream.markdown(part.message.content);
+		}
+	};
+
+	const tutor = vscode.chat.createChatParticipant(PARTICIPANT_ID, chat_handler);
+
+	tutor.iconPath = vscode.Uri.joinPath(context.extensionUri, 'assets', 'img', 'ollama-64x64.png');
+};
+
+export function activate(context: vscode.ExtensionContext) {
+	register_chat_participant(context);
+}
+
+export function deactivate() {}
