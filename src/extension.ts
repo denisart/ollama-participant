@@ -1,6 +1,5 @@
 import * as vscode from 'vscode';
 import ollama from 'ollama';
-import { ExecException } from 'child_process';
 
 const PARTICIPANT_ID = 'ollama-participant';
 
