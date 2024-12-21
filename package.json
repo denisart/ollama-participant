@@ -1,9 +1,14 @@
 {
   "name": "ollama-participant",
   "displayName": "ollama-participant",
-  "publisher": "d.artyushin",
+  "publisher": "dartyushin",
   "description": "Ollama participant for GitHub copilot.",
-  "version": "0.0.1",
+  "icon": "assets/img/ollama-64x64.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/denisart/ollama-participant"
+  },
+  "version": "0.0.2",
   "engines": {
     "vscode": "^1.96.0"
   },
@@ -24,7 +29,22 @@
         "description": "Ollama Participant for GitHub Copilot",
         "isSticky": true
       }
-    ]
+    ],
+    "configuration": {
+      "title": "Ollama Participant",
+      "properties": {
+        "ollama-participant.model": {
+          "type": "string",
+          "enum": [
+            "llama3.1",
+            "qwen2.5-coder",
+            "codellama"
+          ],
+          "default": "llama3.1",
+          "description": "Ollama model to use"
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
@@ -32,7 +52,8 @@
     "watch": "tsc -watch -p ./",
     "pretest": "npm run compile && npm run lint",
     "lint": "eslint src --ext ts",
-    "test": "vscode-test"
+    "test": "vscode-test",
+    "build": "npm run compile && npm exec vsce package"
   },
   "devDependencies": {
     "@types/eslint": "~9.6.1",

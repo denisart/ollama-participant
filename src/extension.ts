@@ -2,7 +2,19 @@ import * as vscode from 'vscode';
 import ollama from 'ollama';
 
 const PARTICIPANT_ID = 'ollama-participant';
-const OLLAMA_MODEL_NAME = 'qwen2.5-coder';
+
+const MODEL_SETTING_FIELD_NAME = 'model';
+
+const DEFAULT_MODEL_NAME = 'llama3.1';
+
+const getModelName = (): string => {
+	const modelName = vscode.workspace.getConfiguration(PARTICIPANT_ID).get(MODEL_SETTING_FIELD_NAME);
+	
+	if (modelName) {
+		return modelName as string;
+	}
+	return DEFAULT_MODEL_NAME;
+};
 
 const register_chat_participant = (context: vscode.ExtensionContext) => {
 	const chat_handler: vscode.ChatRequestHandler = async (
@@ -33,7 +45,7 @@ const register_chat_participant = (context: vscode.ExtensionContext) => {
 		});
 
 		const ollamaResponse = await ollama.chat({
-			model: OLLAMA_MODEL_NAME, 
+			model: getModelName(), 
 			messages: messages, 
 			stream: true 
 		});
