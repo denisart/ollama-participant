@@ -35,12 +35,7 @@
       "properties": {
         "ollama-participant.model": {
           "type": "string",
-          "enum": [
-            "llama3.1",
-            "qwen2.5-coder",
-            "codellama"
-          ],
-          "default": "llama3.1",
+          "default": "qwen2.5-coder",
           "description": "Ollama model to use"
         }
       }
