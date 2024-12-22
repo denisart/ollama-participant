@@ -10,4 +10,4 @@ Go to [GitHub Marketplace](https://marketplace.visualstudio.com/items?itemName=d
 
 After installation, you can use the extension in the Copilot chat like this
 
-![Example](https://github.com/denisart/ollama-participant/blob/master/assets/img/demo.gif?raw=true)
+![Example](https://github.com/denisart/ollama-participant/blob/master/docs/demo.gif?raw=true)
